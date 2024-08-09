@@ -2,6 +2,8 @@ import { getAllStudents } from "@/app/actions"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   const listOfDays = await getAllStudents();
 
