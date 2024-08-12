@@ -28,7 +28,7 @@ export default function Page() {
     }
     setLoading(true);
     const response = await loginAction({ email, password });
-    response.length && toast.error(response);
+    response?.length && toast.error(response);
   };
 
   return (

@@ -12,7 +12,7 @@ type Student = {
   ra: string;
 };
 
-export const Form = ({ students }: { students: Student[] }) => {
+export const Form = () => {
   const [student, setStudent] = React.useState<Partial<Student>>();
   const [formSubmitted, setFormSubmitted] = React.useState(false);
 
@@ -53,7 +53,6 @@ export const Form = ({ students }: { students: Student[] }) => {
         full_name: student.full_name,
         ra: student.ra,
       },
-      students
     );
     if (error) toast.error(message);
     else {

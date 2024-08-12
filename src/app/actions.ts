@@ -7,61 +7,92 @@ interface Student {
 	ra: string;
 }
 
-export async function getStudents(): Promise<Student[]> {
-	const today = new Date().toLocaleDateString("pt-BR");
+export async function getAllStudents(): Promise<
+	{ id: string; students: Student[] }[]
+> {
+	const studentsGroupedByDate = await prisma.faltas.findMany({
+		select: {
+			id: true,
+			students: true,
+		},
+	});
 
-	return await prisma.faltas
-		.findUnique({
-			where: { id: today },
-			select: { students: true },
-		})
-		.then((res) => res?.students as unknown as Student[] || [])
-		.catch(() => {
-			return [];
-		});
-}
-
-export async function getAllStudents(): Promise<{ id: string, students: Student[] }[]> {
-	return await prisma.faltas
-		.findMany()
+	return studentsGroupedByDate.map((group) => ({
+		id: group.id,
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		.then((res) => res as any || [])
-		.catch(() => {
-			return [];
-		});
+		students: (group as any).students.map((student: any) => ({
+			full_name: student.name,
+			ra: student.ra,
+		})),
+	}));
 }
 
 export async function saveStudents(
 	student: Student,
-	students: Student[],
 ): Promise<[boolean, string]> {
 	const today = new Date().toLocaleDateString("pt-BR");
-	const studentsUpdate = students.some(
-		(s: Student) => s.ra.slice(0, 6) === student.ra.slice(0, 6),
-	)
-		? undefined
-		: [...students, student];
 
-	if (!studentsUpdate)
+	const existingStudent = await prisma.faltas.findFirst({
+		where: {
+			id: today,
+			students: {
+				some: {
+					ra: student.ra,
+					name: student.full_name.toUpperCase(),
+				},
+			},
+		},
+	});
+
+	if (existingStudent) {
 		return [
 			false,
 			"Você já preencheu esse form! Se tu acha que não fala com o Brogio.",
 		];
+	}
 
 	return await prisma.faltas
 		.upsert({
-			where: { id: today },
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			update: { students: { set: studentsUpdate as any } },
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			create: { id: today, students: studentsUpdate as any },
+			where: {
+				id: today,
+			},
+			update: {
+				students: {
+					connectOrCreate: {
+						where: {
+							name: student.full_name.toUpperCase(),
+							ra: student.ra,
+						},
+						create: {
+							name: student.full_name.toUpperCase(),
+							ra: student.ra,
+						},
+					},
+				},
+			},
+			create: {
+				id: today,
+				students: {
+					connectOrCreate: {
+						where: {
+							name: student.full_name.toUpperCase(),
+							ra: student.ra,
+						},
+						create: {
+							name: student.full_name.toUpperCase(),
+							ra: student.ra,
+						},
+					},
+				},
+			},
 		})
 		.then(() => [false, "Que milagre, deu certo!"] as [boolean, string])
 		.catch(
-			() =>
-				[true, "Chama o Brogio pq tu fez merda e bugou tudo!"] as [
+			(e) =>{
+				console.log(e)
+				return[true, "Chama o Brogio pq tu fez merda e bugou tudo!"] as [
 					boolean,
 					string,
-				],
+				]},
 		);
 }
