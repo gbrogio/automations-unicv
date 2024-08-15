@@ -7,28 +7,35 @@ interface Student {
 	ra: string;
 }
 
+export async function getStudents(): Promise<Student[]> {
+	const today = new Date().toLocaleDateString("pt-BR");
+
+	return await prisma.faltas
+		.findUnique({
+			where: { id: today },
+			select: { students: true },
+		})
+		.then((res) => (res?.students as unknown as Student[]) || [])
+		.catch(() => {
+			return [];
+		});
+}
+
 export async function getAllStudents(): Promise<
 	{ id: string; students: Student[] }[]
 > {
-	const studentsGroupedByDate = await prisma.faltas.findMany({
-		select: {
-			id: true,
-			students: true,
-		},
-	});
-
-	return studentsGroupedByDate.map((group) => ({
-		id: group.id,
+	return await prisma.faltas
+		.findMany()
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		students: (group as any).students.map((student: any) => ({
-			full_name: student.name,
-			ra: student.ra,
-		})),
-	}));
+		.then((res) => (res as any) || [])
+		.catch(() => {
+			return [];
+		});
 }
 
 export async function saveStudents(
 	student: Student,
+	location: { latitude: number; longitude: number },
 ): Promise<[boolean, string]> {
 	const today = new Date().toLocaleDateString("pt-BR");
 
@@ -87,12 +94,11 @@ export async function saveStudents(
 			},
 		})
 		.then(() => [false, "Que milagre, deu certo!"] as [boolean, string])
-		.catch(
-			(e) =>{
-				console.log(e)
-				return[true, "Chama o Brogio pq tu fez merda e bugou tudo!"] as [
-					boolean,
-					string,
-				]},
-		);
+		.catch((e) => {
+			console.log(e);
+			return [true, "Chama o Brogio pq tu fez merda e bugou tudo!"] as [
+				boolean,
+				string,
+			];
+		});
 }
