@@ -25,9 +25,20 @@ export async function getAllStudents(): Promise<
 	{ id: string; students: Student[] }[]
 > {
 	return await prisma.faltas
-		.findMany()
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		.then((res) => (res as any) || [])
+		.findMany({
+			include: { students: true },
+		})
+		.then((res) => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			return ((res as any) || []).map((day: any) => ({
+				id: day.id,
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				students: day.students.map((student: any) => ({
+					full_name: student.name,
+					ra: student.ra,
+				})),
+			}));
+		})
 		.catch(() => {
 			return [];
 		});

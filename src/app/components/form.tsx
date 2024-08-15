@@ -84,13 +84,8 @@ export const Form = () => {
 			async (position) => {
 				const { latitude, longitude } = position.coords;
 
-				// const referenceLatitude = -23.417938918087827;
-				// const referenceLongitude = -51.93911424044318;
-        
-				const referenceLatitude = -23.006069366828115;
-				const referenceLongitude = -51.95139369768306;
-
-				// Função para calcular a distância entre dois pontos geográficos usando a fórmula de Haversine
+				const referenceLatitude = -23.417938918087827;
+				const referenceLongitude = -51.93911424044318;
 
 				const distance = calculateDistance(
 					latitude,
