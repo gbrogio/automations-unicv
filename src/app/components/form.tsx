@@ -84,8 +84,8 @@ export const Form = () => {
 			async (position) => {
 				const { latitude, longitude } = position.coords;
 
-				const referenceLatitude = -23.417938918087827;
-				const referenceLongitude = -51.93911424044318;
+				const referenceLatitude = -23.41771;
+				const referenceLongitude = -51.93889;
 
 				const distance = calculateDistance(
 					latitude,
@@ -94,7 +94,7 @@ export const Form = () => {
 					referenceLongitude,
 				);
 
-				if (distance <= 500) {
+				if (distance <= 126) {
 					const [error, message] = await saveStudents(
 					  {
 					    full_name: student.full_name || '',
