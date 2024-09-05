@@ -8,15 +8,16 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model faltas {
-  id        String    @id
-  students  Student[]
+model LeftEarlyStudent {
+  id        String  @id @default(cuid())
+  studentId String
+  date      DateTime
+  student  Student @relation(fields: [studentId], references: [id])
 }
 
 model Student {
-  id     String   @id @default(cuid())
-  name   String
-  ra     String   @unique
-  faltas faltas[]
+  id               String             @id @default(cuid())
+  name             String
+  ra               String             @unique
+  LeftEarlyStudent LeftEarlyStudent[]
 }

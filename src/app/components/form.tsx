@@ -6,40 +6,17 @@ import { Separator } from "@/components/ui/separator";
 import { Input, MaskedInput } from "@/components/ui/input";
 import { saveStudents } from "../actions";
 import { toast } from "react-toastify";
+import { calculateDistance } from "@/utils/calculate-distance";
 
 type Student = {
 	full_name: string;
 	ra: string;
 };
 
-function calculateDistance(
-	lat1: number,
-	lon1: number,
-	lat2: number,
-	lon2: number,
-) {
-	const R = 6371e3; // Raio da Terra em metros
-	const φ1 = (lat1 * Math.PI) / 180;
-	const φ2 = (lat2 * Math.PI) / 180;
-	const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-	const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-
-	const a =
-		Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-		Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-	const distance = R * c; // Distância em metros
-	return distance;
-}
-
-export const Form = () => {
+export const Form = ({ formSubmitted: formSubmittedParam }: { formSubmitted?: string }) => {
 	const [student, setStudent] = React.useState<Partial<Student>>();
-	const [formSubmitted, setFormSubmitted] = React.useState(false);
-	const [location, setLocation] = React.useState({
-		latitude: null,
-		longitude: null,
-	});
+	const [formSubmitted, setFormSubmitted] = React.useState(formSubmittedParam === "true");
+	const [loading, setLoading] = React.useState(false);
 
 	React.useEffect(() => {
 		try {
@@ -52,17 +29,6 @@ export const Form = () => {
 			}
 		} catch {
 			localStorage.removeItem("student");
-		}
-
-		const formSubmittedCookie = document.cookie
-			.split("; ")
-			.find((row) => row.startsWith("FORM_SUBMITTED="));
-
-		if (formSubmittedCookie) {
-			const formSubmittedValue = formSubmittedCookie.split("=")[1];
-			if (formSubmittedValue === "true") {
-				setFormSubmitted(true);
-			}
 		}
 	}, []);
 
@@ -80,8 +46,9 @@ export const Form = () => {
 		}
 		if (!student || !student.full_name?.length || !student.ra?.length) return;
 
+		setLoading(true);
 		navigator.geolocation.getCurrentPosition(
-			async (position) => {
+			(position) => {
 				const { latitude, longitude } = position.coords;
 
 				const referenceLatitude = -23.41771;
@@ -95,26 +62,31 @@ export const Form = () => {
 				);
 
 				if (distance <= 126) {
-					const [error, message] = await saveStudents(
+					saveStudents(
 					  {
 					    full_name: student.full_name || '',
 					    ra: student.ra || '',
 					  },
-					  { latitude, longitude },
-					);
-					if (error) toast.error(message);
-					else {
-						toast.success(message);
-						setFormSubmitted(true);
-					}
+					  { latitude: 0, longitude: 0 },
+					).then((res) => {
+						const [error, message] = res;
+						if (error) toast.error(message);
+						else {
+							toast.success(message);
+							setFormSubmitted(true);
+						}
+						setLoading(false);
+					});
 				} else {
+					setLoading(false);
 					toast.error(
-						"Você é espertinho ein. Tá tentando burlar o sistema, mas não vai rolar.",
+						"Opa.. Você não está no local correto! Certifique-se de estar dentro da faculdade e tente novamente!",
 					);
 				}
 			},
 			(error) => {
-				console.error(error);
+				setLoading(false);
+				console.log(error);
 				toast.error("Não foi possível obter a localização.");
 			},
 		);
@@ -177,7 +149,7 @@ export const Form = () => {
 					/>
 				</div>
 
-				<Button type="submit" className="!mt-4 w-full" disabled={formSubmitted}>
+				<Button type="submit" className="!mt-4 w-full" disabled={loading || formSubmitted}>
 					{formSubmitted
 						? "Presença Confirmada"
 						: `Confirmar Presença (${new Date().toLocaleDateString("pt-BR")})`}

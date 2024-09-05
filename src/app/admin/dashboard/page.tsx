@@ -28,7 +28,14 @@ export default async function Page() {
             </DialogHeader>
             <ul className="grid gap-2 list-disc pl-4">
               {day.students.map((student) => (
-                <li key={student.ra}>{student.full_name} - {student.ra}</li>
+                <li key={student.ra}>{student.full_name} - {student.ra} - {
+                  new Date(student.date).toLocaleTimeString('pt-BR', { 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit',
+                  })
+                }
+                </li>
               ))}
             </ul>
           </DialogContent>
