@@ -8,7 +8,7 @@ export default function block() {
       <p className="text-xl font-bold text-center">
         Opa.. O serviço não está disponível no momento por conta do horário ou
         do dispositivo utilizado!<br/><br/>Certifique-se de que esteje em um dispositivo
-        móvel e que o horário seja entre 21:30 e 22:00 ou 22:10 e 22:40!
+        móvel e que o horário seja entre 21:30 e 22:40!
       </p>
       <Button asChild>
         <Link href="/">Tentar Novamente</Link>

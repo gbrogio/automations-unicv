@@ -41,19 +41,20 @@ export async function saveStudents(
   { latitude, longitude }: { latitude: number; longitude: number }
 ): Promise<[boolean, string]> {
   const now = new Date();
-  /* const hour = now.getUTCHours() - 3;
+  const hour = now.getUTCHours() - 3;
 	const minutes = now.getUTCMinutes();
 	const time = hour * 60 + minutes;
 
-	const firstTime = time >= 21 * 60 + 30 && time <= 22 * 60;
-	const secondTime = time >= 22 * 60 + 10 && time <= 22 * 60 + 40;
+	/* const firstTime = time >= 21 * 60 + 30 && time <= 22 * 60;
+	const secondTime = time >= 22 * 60 + 10 && time <= 22 * 60 + 40; */
+  const third = time >= 22 * 60 + 30 && time <= 22 * 60 + 40;
 
-	if (!(firstTime || secondTime)) {
+	if (!third) {
 		return [
 			true,
-			"Opa.. O serviço não está disponível no momento por conta do horário! Certifique-se de que agora seja entre 21:30 e 22:00 ou 22:10 e 22:40!",
+			"Opa.. O serviço não está disponível no momento por conta do horário! Certifique-se de que agora seja entre 21:30 e 22:40!",
 		];
-	} */
+	}
 
   const currentYear = new Date().getFullYear();
   const raYear = Number.parseInt(
@@ -74,12 +75,12 @@ export async function saveStudents(
     referenceLongitude
   );
 
-  if (distance > 126) {
+  /* if (distance > 126) {
     return [
       true,
       "Você é espertinho ein. Tá tentando burlar o sistema, mas não vai rolar.",
     ];
-  }
+  } */
 
   const existingStudent = await prisma.leftEarlyStudent.findFirst({
     where: { student: { ra: student.ra } },
