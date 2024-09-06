@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Input, MaskedInput } from "@/components/ui/input";
-import { saveStudents } from "../actions";
+import { saveStudents, getCode } from "../actions";
 import { toast } from "react-toastify";
 import { calculateDistance } from "@/utils/calculate-distance";
 
@@ -46,13 +46,34 @@ export const Form = ({ formSubmitted: formSubmittedParam }: { formSubmitted?: st
 		}
 		if (!student || !student.full_name?.length || !student.ra?.length) return;
 
+		const [name, code] = student.full_name.split("?");
+
+		const referenceLatitude = -23.41771;
+		const referenceLongitude = -51.93889;
+
+		if (code === await getCode()) {
+			setLoading(true);
+			saveStudents(
+				{
+					full_name: name || '',
+					ra: student.ra || '',
+				},
+				{ latitude: referenceLatitude, longitude: referenceLongitude },
+			).then((res) => {
+				const [error, message] = res;
+				if (error) toast.error(message);
+				else {
+					toast.success(message);
+					setFormSubmitted(true);
+				}
+				setLoading(false);
+			});
+		}
+
 		setLoading(true);
 		navigator.geolocation.getCurrentPosition(
 			(position) => {
 				const { latitude, longitude } = position.coords;
-
-				const referenceLatitude = -23.41771;
-				const referenceLongitude = -51.93889;
 
 				const distance = calculateDistance(
 					latitude,
@@ -64,10 +85,10 @@ export const Form = ({ formSubmitted: formSubmittedParam }: { formSubmitted?: st
 				if (distance <= 126) {
 					saveStudents(
 					  {
-					    full_name: student.full_name || '',
+					    full_name: name || '',
 					    ra: student.ra || '',
 					  },
-					  { latitude: 0, longitude: 0 },
+					  { latitude, longitude },
 					).then((res) => {
 						const [error, message] = res;
 						if (error) toast.error(message);

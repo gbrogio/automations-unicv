@@ -36,6 +36,10 @@ export async function getAllStudents(): Promise<
     });
 }
 
+export async function getCode() {
+  return process.env.GB_CODE;
+}
+
 export async function saveStudents(
   student: Student,
   { latitude, longitude }: { latitude: number; longitude: number }
@@ -47,14 +51,14 @@ export async function saveStudents(
 
 	/* const firstTime = time >= 21 * 60 + 30 && time <= 22 * 60;
 	const secondTime = time >= 22 * 60 + 10 && time <= 22 * 60 + 40; */
-  /* const third = time >= 22 * 60 + 30 && time <= 22 * 60 + 40;
+  const third = time >= 22 * 60 + 25 && time <= 22 * 60 + 40;
 
 	if (!third) {
 		return [
 			true,
-			"Opa.. O serviço não está disponível no momento por conta do horário! Certifique-se de que agora seja entre 21:30 e 22:40!",
+			"Opa.. O serviço não está disponível no momento por conta do horário! Certifique-se de que agora seja entre 21:25 e 22:40!",
 		];
-	} */
+	}
 
   const currentYear = new Date().getFullYear();
   const raYear = Number.parseInt(
@@ -75,12 +79,12 @@ export async function saveStudents(
     referenceLongitude
   );
 
-  /* if (distance > 126) {
+  if (distance > 126) {
     return [
       true,
       "Você é espertinho ein. Tá tentando burlar o sistema, mas não vai rolar.",
     ];
-  } */
+  }
 
   const existingStudent = await prisma.leftEarlyStudent.findFirst({
     where: { student: { ra: student.ra } },
