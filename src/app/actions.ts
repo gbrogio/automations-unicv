@@ -51,14 +51,14 @@ export async function saveStudents(
 
 	/* const firstTime = time >= 21 * 60 + 30 && time <= 22 * 60;
 	const secondTime = time >= 22 * 60 + 10 && time <= 22 * 60 + 40; */
-  const third = time >= 22 * 60 + 25 && time <= 22 * 60 + 40;
+  /* const third = time >= 22 * 60 + 25 && time <= 22 * 60 + 40; */
 
-	if (!third) {
+	/* if (!third) {
 		return [
 			true,
 			"Opa.. O serviço não está disponível no momento por conta do horário! Certifique-se de que agora seja entre 21:25 e 22:40!",
 		];
-	}
+	} */
 
   const currentYear = new Date().getFullYear();
   const raYear = Number.parseInt(
