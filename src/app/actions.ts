@@ -51,6 +51,7 @@ export async function saveStudents(
 	{ latitude, longitude }: { latitude: number; longitude: number },
 ): Promise<[boolean, string]> {
 	const now = new Date();
+	const today = new Date();
 	const hour = now.getUTCHours() - 3;
 	const minutes = now.getUTCMinutes();
 	const time = hour * 60 + minutes;
@@ -95,7 +96,7 @@ export async function saveStudents(
 	const existingStudent = await prisma.leftEarlyStudent.findFirst({
 		where: {
 			student: { ra: student.ra },
-			date: { gte: new Date(now.setHours(0, 0, 0, 0)) },
+			date: { gte: new Date(today.setHours(0, 0, 0, 0)) },
 		},
 	});
 
