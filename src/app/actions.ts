@@ -19,11 +19,11 @@ export async function getAllStudents(): Promise<
 		.then((res) => {
 			return res.reduce(
 				(acc, item) => {
-					const date = new Date(item.date).toLocaleDateString("pt-BR");
+					const dateDate = new Date(item.date);
+					dateDate.setDate(dateDate.getDate() - 1);
+					const date = dateDate.toLocaleDateString("pt-BR");
 					if (!acc[date]) {
-						const newDate = new Date(date);
-						newDate.setDate(newDate.getDate() - 1);
-						acc[date] = { id: newDate.toLocaleDateString("pt-BR"), students: [] };
+						acc[date] = { id: date, students: [] };
 					}
 					acc[date].students.push({
 						full_name: item.student.name,
