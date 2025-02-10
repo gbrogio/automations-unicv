@@ -39,7 +39,7 @@ export async function registrarSaida(formData: FormData) {
 
   // Store the registration in cookies to prevent multiple registrations
   cookieStore.set(`last_exit_${ra}`, today.toISOString(), {
-    maxAge: new Date(today.getTime() + 5 * 60 * 60 * 1000) // Expires in 24 hours
+    maxAge: today.getTime() + 5 * 60 * 60 * 1000 // Expires in 5 hours
   })
 
   revalidatePath('/')

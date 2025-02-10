@@ -144,7 +144,7 @@ export default function Home() {
           if (distance <= 126) {
             await registrarSaida(formData);
           } else {
-            setLoading(false);
+            setIsSubmitting(false);
             toast.error(
               "Opa.. Você não está no local correto! Certifique-se de estar dentro da faculdade e tente novamente!",
             );
@@ -164,7 +164,7 @@ export default function Home() {
         }
       },
 			(error) => {
-				setLoading(false);
+				setIsSubmitting(false);
 				console.log(error);
 				toast.error("Não foi possível obter a localização.");
 			},
