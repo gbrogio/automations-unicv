@@ -28,6 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { registrarSaida } from "@/lib/actions/saidas";
+import { calculateDistance } from "@/lib/calculate-distance";
 
 export default function Home() {
   const [nome, setNome] = useState("");
