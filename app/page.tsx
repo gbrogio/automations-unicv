@@ -123,7 +123,7 @@ export default function Home() {
 
   const handleConfirmExit = async () => {
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
           try {
             setIsSubmitting(true);
             const formData = new FormData();
