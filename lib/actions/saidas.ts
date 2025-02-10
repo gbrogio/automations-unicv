@@ -24,7 +24,7 @@ export async function registrarSaida(formData: FormData) {
     .maybeSingle()
 
   if (existingRecord) {
-    throw new Error('Você já registrou sua saída hoje!')
+    return 'Você já registrou sua saída hoje!?=error'
   }
 
   const { error } = await supabase
@@ -35,14 +35,15 @@ export async function registrarSaida(formData: FormData) {
       motivo: motivo || null
     })
 
-  if (error) return "Ops... Parece que deu algum problema. Contate o suporte!"
+  if (error) return "Ops... Parece que deu algum problema. Contate o suporte!?=error"
 
   // Store the registration in cookies to prevent multiple registrations
   cookieStore.set(`last_exit_${ra}`, today.toISOString(), {
     maxAge: today.getTime() + 5 * 60 * 60 * 1000 // Expires in 5 hours
   })
 
-  revalidatePath('/')
+  revalidatePath('/');
+  return 'Tudo certo! Boa viagem! 🚌?=success'
 }
 
 export async function getSaidas() {

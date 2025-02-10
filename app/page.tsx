@@ -142,7 +142,10 @@ export default function Home() {
               referenceLongitude,
             );
           if (distance <= 126) {
-            await registrarSaida(formData);
+            await registrarSaida(formData).then((res) => {
+              const [message, type] = res.split("?=");
+              toast[type as 'error'](message);
+            });
           } else {
             setIsSubmitting(false);
             toast.error(
@@ -154,7 +157,6 @@ export default function Home() {
           localStorage.setItem(`last_exit_${ra}`, new Date().toISOString());
           
           setHasRegisteredToday(true);
-          toast.success("Tudo certo! Boa viagem! 🚌");
           setShowReasonDialog(false);
           setReason("");
         } catch (error) {
