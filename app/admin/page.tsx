@@ -116,7 +116,7 @@ function ListaSaidas({ diasAula }: { diasAula: any[] }) {
               <DialogTrigger className="p-4 w-full rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Registro de saídas - {new Date(dia.data).toLocaleDateString()}</p>
+                    <p className="font-medium">Registro de saídas - {new Date(dia.data).toLocaleDateString('pt-BR')}</p>
                     <p className="text-sm text-muted-foreground">
                       {dia.totalAlunos} alunos
                     </p>
@@ -130,7 +130,7 @@ function ListaSaidas({ diasAula }: { diasAula: any[] }) {
               >
                 <DialogHeader>
                   <DialogTitle>
-                    Registro de saídas - {new Date(dia.data).toLocaleDateString()}
+                    Registro de saídas - {new Date(dia.data).toLocaleDateString('pt-BR')}
                   </DialogTitle>
                 </DialogHeader>
                 <ScrollArea className="h-[60vh]">
