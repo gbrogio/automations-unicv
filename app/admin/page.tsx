@@ -21,7 +21,7 @@ export default async function AdminPage() {
 
   // Group exits by date
   const saidasPorDia = saidas.reduce((acc: any, saida) => {
-    const data = new Date(saida.created_at).toLocaleDateString();
+    const data = new Date(saida.created_at).toLocaleDateString('pt-BR');
     if (!acc[data]) {
       acc[data] = {
         data,
@@ -32,7 +32,7 @@ export default async function AdminPage() {
     acc[data].alunos.push({
       nome: saida.aluno_nome,
       ra: saida.aluno_ra,
-      horarioSaida: new Date(saida.horario_saida).toLocaleTimeString(),
+      horarioSaida: new Date(saida.horario_saida).toLocaleTimeString('pt-BR'),
       data,
       motivo: saida.motivo,
     });
