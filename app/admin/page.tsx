@@ -20,8 +20,11 @@ export default async function AdminPage() {
   const saidas = await getSaidas();
 
   // Group exits by date
-  const saidasPorDia = saidas.reduce((acc: any, saida) => {
-    const data = new Date(saida.created_at).toLocaleDateString('pt-BR');
+  const saidasPorDia = saidas.reduce((acc, saida) => {
+    const dataTime = new Date(saida.created_at);
+    dataTime.setHours(dataTime.getHours() - 3);
+    const data = dataTime.toLocaleDateString('pt-BR');
+
     if (!acc[data]) {
       acc[data] = {
         data,
