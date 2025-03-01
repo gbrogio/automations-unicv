@@ -125,7 +125,7 @@ function ListaSaidas({ diasAula }: { diasAula: any[] }) {
                   <div>
                     <p className="font-medium">
                       Registro de saídas -{" "}
-                      {new Date(dia.data).toLocaleDateString("pt-BR")}
+                      {dia.data}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {dia.totalAlunos} alunos
@@ -141,7 +141,7 @@ function ListaSaidas({ diasAula }: { diasAula: any[] }) {
                 <DialogHeader>
                   <DialogTitle>
                     Registro de saídas -{" "}
-                    {new Date(dia.data).toLocaleDateString("pt-BR")}
+                    {dia.data}
                   </DialogTitle>
                 </DialogHeader>
                 <ScrollArea className="h-[60vh]">
